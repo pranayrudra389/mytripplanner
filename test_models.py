@@ -15,11 +15,13 @@ print(f"\nUpdated: {prefs}")
 # Test creating a day plan
 day1 = DayPlan(
     day_number=1,
-    location="Shibuya, Tokyo",
+    city="Shibuya, Tokyo",
     morning="visit Meiji Shrine",
     afternoon="Explore Harajuku",
     evening="Dinner in Shibuya",
-    estimated_cost=150.0
+    activity_cost=80.0,
+    food_cost=50.0,
+    transport_cost=20.0,
 )
 print(f"\nDay 1: {day1}")
 

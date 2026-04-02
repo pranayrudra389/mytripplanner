@@ -11,6 +11,67 @@ search_tool = TavilySearch(
 )
 
 @tool
+def search_hotels(destination: str, check_in: str, check_out: str, budget_level: str, num_guests: int = 2) -> str:
+    """Search for hotels at a specific destination.
+    budget_level should be 'budget', 'mid-range', or 'luxury'.
+    check_in and check_out should be dates like '2026-04-05'.
+    Returns hotel names, prices, ratings, and amenities."""
+    
+    price_map = {"budget": "under $80/night", "mid-range": "$80-200/night", "luxury": "over $200/night"}
+    price_hint = price_map.get(budget_level, "$80-200/night")
+    
+    query = f"best {budget_level} hotels in {destination} {price_hint} {check_in} for {num_guests} guests amenities ratings"
+    results = search_tool.invoke(query)
+    
+    # Extract clean text from search results
+    if isinstance(results, dict) and "results" in results:
+        summaries = []
+        for r in results["results"][:5]:
+            summaries.append(f"- {r.get('title', '')}: {r.get('content', '')[:200]}")
+        return f"Hotels in {destination} ({budget_level}):\n" + "\n".join(summaries)
+    
+    return str(results)
+
+@tool
+def search_attractions(destination: str, interests: str) -> str:
+    """Search for attractions and activities at a destination.
+    interests should be comma-separated like 'food, temples, shopping'.
+    Returns top attractions with descriptions and estimated costs."""
+
+    query = f"top things to do in {destination} {interests} with prices and tips 2026"
+    results = search_tool.invoke(query)
+
+    if isinstance(results, dict) and "results" in results:
+        summaries = []
+        for r in results["results"][:5]:
+            summaries.append(f"- {r.get('title', '')}: {r.get('content', '')[:200]}")
+        return f"Attractions in {destination}:\n" + "\n".join(summaries)
+
+    return str(results)
+
+
+@tool
+def search_transport(departure: str, destination: str, travel_mode: str, date: str = "") -> str:
+    """Search for transportation options between two places.
+    travel_mode should be 'flight' or 'roadtrip'.
+    Returns options with estimated prices and duration."""
+
+    if travel_mode == "flight":
+        query = f"flights from {departure} to {destination} {date} estimated price duration airlines 2026"
+    else:
+        query = f"road trip from {departure} to {destination} driving time route gas cost tips 2026"
+
+    results = search_tool.invoke(query)
+
+    if isinstance(results, dict) and "results" in results:
+        summaries = []
+        for r in results["results"][:5]:
+            summaries.append(f"- {r.get('title', '')}: {r.get('content', '')[:200]}")
+        return f"Transport from {departure} to {destination} ({travel_mode}):\n" + "\n".join(summaries)
+
+    return str(results)
+
+@tool
 def get_weather(destination: str, month: str) -> str:
     """Get typical weather information for a destination during a specific month.
     Use this to help travelers know what to pack and plan outdoor activities."""
@@ -19,7 +80,14 @@ def get_weather(destination: str, month: str) -> str:
     # In production, we use a weather API like OpenWeatherMap
     query = f"typical weather in {destination} during {month} temperature rainfall what to pack"
     results = search_tool.invoke(query)
-    return results
+    if isinstance(results, dict) and "results" in results:
+        summaries = []
+        for r in results["results"][:3]:
+            summaries.append(r.get("content", "")[:200])
+        return f"Weather in {destination} during {month}:\n" + "\n".join(summaries)
+
+    return str(results)
+
 
 @tool
 def calculate_budget(total_budget: float, expenses: str) -> str:
@@ -71,5 +139,5 @@ def save_itinerary(itinerary_text: str, filename: str = "trip_itinerary.md") -> 
 
 def get_tools():
     """Return all available tools for the agent."""
-    return [search_tool, get_weather, calculate_budget, save_itinerary]
+    return [search_hotels, search_attractions, search_transport, get_weather, calculate_budget, save_itinerary]
 
