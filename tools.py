@@ -38,7 +38,7 @@ def search_attractions(destination: str, interests: str) -> str:
     interests should be comma-separated like 'food, temples, shopping'.
     Returns top attractions with descriptions and estimated costs."""
 
-    query = f"top things to do in {destination} {interests} with prices and tips 2026"
+    query = f"top things to do in {destination} {interests} hidden gems local favorites with prices and tips 2026"
     results = search_tool.invoke(query)
 
     if isinstance(results, dict) and "results" in results:
