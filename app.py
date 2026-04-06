@@ -51,15 +51,10 @@ def main():
     }
     
     while True:
-        # Multiline input support
-        print("You: (press Enter twice to send)")
-        lines = []
-        while True:
-            line = input()
-            if line == "":
-                break
-            lines.append(line)
-        user_input = " ".join(lines).strip()
+        try:
+            user_input = input("You: ").strip()
+        except EOFError:
+            break
 
         if not user_input:
             continue        
@@ -87,7 +82,7 @@ def main():
         state["messages"].append(HumanMessage(content=user_input))
         
         try:
-            print("\n🤖 Agent: ", end="", flush=True)
+            # Agent response will print after processing
             final_content = ""
 
             for event in agent.stream(state, stream_mode="updates"):
@@ -95,23 +90,18 @@ def main():
                     # Show progress for each node
                     if node_name == "extract":
                         print("\n📋 Got your preferences! Researching...", flush=True)
-                        print("🤖 Agent: ", end="", flush=True)
 
                     if node_name == "research":
                         print("\n🔍 Researching your trip...", flush=True)
-                        print("🤖 Agent: ", end="", flush=True)
 
                     if node_name == "tools":
                         print("🛠️  Using search tools...", flush=True)
-                        print("🤖 Agent: ", end="", flush=True)
 
                     if node_name == "build":
                         print("\n🏗️  Building your itinerary...", flush=True)
-                        print("🤖 Agent: ", end="", flush=True)
 
                     if node_name == "reflect":
                         print("\n🔎 Reviewing the plan...", flush=True)
-                        print("🤖 Agent: ", end="", flush=True)
 
                     # Capture messages from this node
                     if "messages" in node_output:
@@ -138,8 +128,7 @@ def main():
 
             # Print final response
             if final_content:
-                print(final_content, flush=True)
-            print()
+                print(f"\n🤖 Agent: {final_content}\n")
 
             # Update messages in state from the last event
             if "messages" in node_output:

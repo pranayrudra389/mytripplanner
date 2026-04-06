@@ -150,6 +150,21 @@ CRITICAL BUDGET RULE: The total trip cost MUST stay within ${budget}.
 Budget per day: approximately ${daily_budget}/day.
 If costs exceed the budget, use cheaper alternatives.
 
+STRICT BUDGET ENFORCEMENT:
+- Calculate max daily budget: ${daily_budget}/day
+- Hotels MUST be under $100/night for budget, under $150/night for mid-range
+- Food budget: max $40/day for two people at budget level, $60/day for mid-range
+- BEFORE writing the itinerary, calculate: (hotel_cost x nights) + (food_per_day x days) + activities + gas/electricity
+- If this exceeds ${budget}, use cheaper hotels or fewer paid activities
+- The grand total MUST be under ${budget} — not over, not "with adjustments needed"
+
+SCHEDULE CONSTRAINTS:
+- Check if the user mentioned work days or events on specific dates
+- If the user mentioned work days or a specific schedule, follow their EXACT constraints from the conversation
+- Do not assume work hours — use whatever times the user specified
+- On conference/event days, only plan evening activities
+- Weekends (Saturday/Sunday) are full free days
+
 User preferences:
 - Destination: {destination}
 - Dates: {start_date} to {end_date}
@@ -214,7 +229,10 @@ Check:
 If the plan is acceptable (within 10% of budget), respond with: PLAN_APPROVED
 If over budget, respond with: PLAN_APPROVED (but add a note about budget concerns)
 
-IMPORTANT: Always respond with PLAN_APPROVED. Do not reject — we will present to the user for their feedback."""
+IMPORTANT: If the total cost is within 5% of the budget, respond with PLAN_APPROVED.
+If it exceeds the budget by more than 5%, respond with PLAN_APPROVED but include 
+specific line items to cut (e.g., "Switch LUMA Hotel to HI San Francisco hostel to save $50/night").
+Always end with PLAN_APPROVED — we present to the user regardless, but include your budget notes."""
 
 def reflect_node(state: AgentState) -> dict:
     """Review the itinerary for quality and budegt compliance."""
