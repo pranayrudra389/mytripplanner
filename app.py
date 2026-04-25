@@ -1,9 +1,6 @@
 import os
-from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage
 from agent import create_agent
-
-load_dotenv()
 
 
 def save_trip(content: str):
@@ -47,6 +44,7 @@ def main():
         "preferences": {},
         "planning_stage": "gathering",
         "research_count": 0,
+        "revision_count": 0,
         "itinerary_draft": "",
     }
     
@@ -106,6 +104,8 @@ def main():
                     # Capture messages from this node
                     if "messages" in node_output:
                         for msg in node_output["messages"]:
+                            if msg not in state["messages"]:
+                                state["messages"].append(msg)
                             if hasattr(msg, "content") and msg.content:
                                 # Skip internal routing keywords
                                 if "PLANNING_READY" in msg.content:
@@ -126,16 +126,13 @@ def main():
                     if "research_count" in node_output:
                         state["research_count"] = node_output["research_count"]
 
+                    # Update revision count
+                    if "revision_count" in node_output:
+                        state["revision_count"] = node_output["revision_count"]
+
             # Print final response
             if final_content:
                 print(f"\n🤖 Agent: {final_content}\n")
-
-            # Update messages in state from the last event
-            if "messages" in node_output:
-                state["messages"] = state.get("messages", [])
-                for msg in node_output["messages"]:
-                    if msg not in state["messages"]:
-                        state["messages"].append(msg)
                         
         except KeyboardInterrupt:
             print("\n\n⚠️ Interrupted. Type 'quit' to exit or continue chatting.\n")
