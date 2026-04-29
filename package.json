@@ -1,0 +1,15 @@
+{
+  "name": "mytripplanner",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "packages/plugins/*"
+  ],
+  "scripts": {
+    "dev": "echo \"Define workspace dev commands\"",
+    "build": "echo \"Define workspace build commands\"",
+    "test": "echo \"Define workspace test commands\""
+  }
+}

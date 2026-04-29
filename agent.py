@@ -54,12 +54,12 @@ def create_agent():
         draft = state.get("itinerary_draft", "")
         message = f"""Here's your trip plan! Please review it:
 
-{draft}
+        {draft}
 
-Would you like me to:
-- **Save** this itinerary to a file
-- **Adjust** anything (budget, activities, hotels)
-- **Start over** with different preferences"""
+        Would you like me to:
+        - **Save** this itinerary to a file
+        - **Adjust** anything (budget, activities, hotels)
+        - **Start over** with different preferences"""
 
         return {"messages": [AIMessage(content=message)]}
 
