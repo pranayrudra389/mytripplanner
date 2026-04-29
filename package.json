@@ -8,8 +8,9 @@
     "packages/plugins/*"
   ],
   "scripts": {
-    "dev": "echo \"Define workspace dev commands\"",
-    "build": "echo \"Define workspace build commands\"",
+    "dev": "npm --workspace apps/web run dev",
+    "build": "npm --workspace apps/web run build",
+    "lint": "npm --workspace apps/web run lint",
     "test": "echo \"Define workspace test commands\""
   }
 }

@@ -1,5 +1,15 @@
+# Environment Variables
 .env
+
+# Python
 .venv
 __pycache__
 .DS_Store
 test_trip.md
+
+# Node
+node_modules
+apps/web/.next
+
+# Tooling output
+.playwright-mcp
